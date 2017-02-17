@@ -794,4 +794,174 @@
             });
         </script>
     </body>
+    <style>
+  .smallboom {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .smallboom em {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5px;
+    height: auto;
+    padding-top: 100%;
+    border-radius: 100px;
+    background-color: red;
+    -webkit-transition:  left .5s cubic-bezier(0,.19,.75,.75),
+                         top .5s cubic-bezier(0,-0.68,.91,.91),
+                         opacity 1s cubic-bezier(.83,0,.87,.99),
+                         transform 1s cubic-bezier(0,.74,1,.44);
+  }
+  .smallboom em:before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 0;
+    padding-top: 100%;
+  }
+  
+  .smallboom span {
+    display: block;
+    width: 50px;
+    text-align: center;
+    margin-left: -25px;
+    margin-top: -15px;
+    color: red;
+    font-weight: bold;
+    -webkit-animation: smallboom_text 1s both;
+  }
+  @-webkit-keyframes smallboom_text {
+    0 {
+      -webkit-transform: translateY(0);
+    }
+    50% {
+      -webkit-transform: translateY(-10px);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: translateY(-50px);
+      opacity: 0;
+    }
+  }
+  .smallboom_shock_0 {
+    -webkit-animation: smallboom_shock_0 .3s both;
+  }
+  @-webkit-keyframes smallboom_shock_0 {
+    0 {
+      -webkit-transform: translate(10px, 5px);
+    }
+    30% {
+      -webkit-transform: translate(-10px, -5px);
+    }
+    100% {
+      -webkit-transform: translate(0);
+    }
+  }
+  .smallboom_shock_1 {
+    -webkit-animation: smallboom_shock_1 .3s both;
+  }
+  @-webkit-keyframes smallboom_shock_1 {
+    0 {
+      -webkit-transform: translate(10px, -5px);
+    }
+    30% {
+      -webkit-transform: translate(-10px, 5px);
+    }
+    100% {
+      -webkit-transform: translate(0);
+    }
+  }
+  .smallboom_shock_2 {
+    -webkit-animation: smallboom_shock_2 .3s both;
+  }
+  @-webkit-keyframes smallboom_shock_2 {
+    0 {
+      -webkit-transform: translate(5px, -10px);
+    }
+    30% {
+      -webkit-transform: translate(-10px, -5px);
+    }
+    100% {
+      -webkit-transform: translate(0);
+    }
+  }
+  
+  #btn_letmehighhigh {
+    display: block;
+    text-align: center;
+    line-height: 40px;
+    width: 200px;
+    background-color: #DC0000;
+    color: #fff;
+    border-radius: 100px;
+    cursor: pointer;
+    -webkit-user-select: none;
+  }
+  #btn_letmehighhigh.active {
+    background-color: #92DC00;
+  }
+</style>
+    <script>
+var smallboom_switch = true;
+var smallboom_id = 0;
+var smallboom_event = "transitionend";
+if(typeof document.body.style.webkitTransition==="string"){
+  smallboom_event = "webkitTransitionEnd";
+}
+
+function smallboom( tmp_smallboom ){
+  $( tmp_smallboom ).find("em").each(function(){
+    $(this).css({ "top": Math.round(Math.random()*250) +"px",
+                   "left": ((Math.random()>.5)?"":"-") + Math.round(Math.random()*100) +"px",
+                   "width": Math.round(Math.random()*20) +"px",
+                   "transform": "scale( 2 )",
+                   "opacity": 0
+                   });
+  });
+  $( tmp_smallboom ).on(smallboom_event, function(){
+    if( $(this).find("em").css("opacity") == 0 ) {
+      $(this).remove();
+    }
+  });
+}
+  
+$(function(){
+
+  $(document).on("click", function(e){
+    if( smallboom_switch ) {
+      var tmp_html_smallboom = "<div class=\"smallboom smallboom_"+ smallboom_id +"\">";
+      for( var i=0; i<Math.round(Math.random()*15+3); i++ ) {
+        tmp_html_smallboom += "<em></em>";
+      }
+      tmp_html_smallboom += "<span>+"+ Math.round(Math.random()*200+1) +"</span></div>";
+      $( tmp_html_smallboom ).appendTo("body")
+                             .css({"top": e.pageY,"left": e.pageX});
+      setTimeout("smallboom(\".smallboom_"+ smallboom_id +"\")", 0);
+      smallboom_id++;
+      $("#main").removeClass( "smallboom_shock_0 smallboom_shock_1 smallboom_shock_2" )
+               .addClass( "smallboom_shock_" + Math.floor(Math.random()*3) );
+    }
+  });
+  
+  $("#btn_letmehighhigh").on("click", function(){
+    if( $("#btn_letmehighhigh").hasClass("active") ) {
+      $("#btn_letmehighhigh").removeClass("active").html("开启暴力模式");
+      smallboom_switch = false;
+    } else {
+      $("#btn_letmehighhigh").addClass("active").html("返回小清新模式");
+      smallboom_switch = true;
+    }
+    
+  });
+  
+});
+  
+
+</script>
 </html>
